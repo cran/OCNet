@@ -1,5 +1,6 @@
 
 draw_thematic_OCN <- function(theme,OCN,
+                              chooseAggregation=NULL,
                               discreteLevels=FALSE,
                               colLevels=NULL,
                               cutoff=FALSE,
@@ -31,36 +32,47 @@ draw_thematic_OCN <- function(theme,OCN,
     Breakpoints <- seq(minval,maxval,len = N_colLevels+1)
   } else if (discreteLevels == TRUE) {
     if (is.null(colLevels)){
-    N_colLevels <- length(unique(theme[!is.nan(theme)]))
-    Breakpoints <- c(sort(unique(theme[!is.nan(theme)])),2*max(theme[!is.nan(theme)]))
-  } else {N_colLevels <- length(colLevels) - 1
-  Breakpoints <- colLevels}}
+      N_colLevels <- length(unique(theme[!is.nan(theme)]))
+      Breakpoints <- c(sort(unique(theme[!is.nan(theme)])),2*max(theme[!is.nan(theme)]))
+    } else {N_colLevels <- length(colLevels) - 1
+    Breakpoints <- colLevels}}
   
   if (typeof(colPalette)=="closure") {
     colPalette <- colPalette(N_colLevels)
   } else if (typeof(colPalette)=="character") {
     colPalette <- colPalette[1:N_colLevels] }
   
-  tmp <- "TMP"
   if (length(theme)==OCN$RN$nNodes && (length(theme)==OCN$AG$nNodes)){
-    while ((tmp != "RN") && (tmp != "AG"))
-      tmp <- readline(prompt="theme can be interpreted as a vector both at the RN and AG levels. Choose desired level by typing RN or AG: ")
-    if (tmp == "RN"){
+    if (isTRUE(chooseAggregation == "RN")){
       byRN = TRUE
-    } else if (tmp == "AG"){
+    } else if (isTRUE(chooseAggregation == "AG")){
       byRN = FALSE
     } else {
-      print('Wrong input!')
+      stop('RN$nNodes = AG$nNodes, and chooseAggregation has not been specified.')
     }
-  } 
-  
-  if (length(theme)==OCN$RN$nNodes){
+  } else if (length(theme)==OCN$RN$nNodes){
     byRN = TRUE
   } else if (length(theme)==OCN$AG$nNodes){
     byRN = FALSE
   } else {
     stop('theme has invalid length')
   }
+  
+  
+#  tmp <- "TMP"
+#  if (length(theme)==OCN$RN$nNodes && (length(theme)==OCN$AG$nNodes)){
+#    while ((tmp != "RN") && (tmp != "AG"))
+#      tmp <- readline(prompt="theme can be interpreted as a vector both at the RN and AG levels. Choose desired level by typing RN or AG: ")
+#    if (tmp == "RN"){
+#      byRN = TRUE
+#    } else if (tmp == "AG"){
+#      byRN = FALSE
+#    } else {
+#      print('Wrong input!')
+#    }
+#  } 
+  
+
   
   if (length(cex)>1 && length(cex) != length(theme)){
     stop('cex has invalid length')
@@ -107,10 +119,13 @@ draw_thematic_OCN <- function(theme,OCN,
   if (!is.null(backgroundColor)){
     if ((length(chooseCM) > 1) && (length(backgroundColor)==1) ){
       backgroundColor=rep(backgroundColor,length(chooseCM))}
+    k <- 1
     for (i in chooseCM){
       for (j in 1:length(Xc[[i]])){
-        polygon(Xc[[i]][[j]],Yc[[i]][[j]],col=backgroundColor[i],lty=0)
-      }}
+        polygon(Xc[[i]][[j]],Yc[[i]][[j]],col=backgroundColor[k],lty=0)
+      }
+      k <- k + 1
+    }
   }
   
   for (i in AvailableNodes){
@@ -120,9 +135,9 @@ draw_thematic_OCN <- function(theme,OCN,
         abs(X[i]-X[OCN$FD$downNode[i]]) <= OCN$cellsize & 
         abs(Y[i]-Y[OCN$FD$downNode[i]]) <= OCN$cellsize  ) {
       if ( (byRN==TRUE && (is.nan(theme[rn])==TRUE | is.na(theme[rn])==TRUE)) ||
-          (byRN==FALSE && (is.nan(theme[reach])==TRUE | is.na(theme[reach])==TRUE)) ||
-          (byRN==TRUE && cutoff==TRUE && (theme[rn] < min(Breakpoints) || theme[rn] > max(Breakpoints))) ||
-          (byRN==FALSE && cutoff==TRUE && (theme[reach] < min(Breakpoints) || theme[reach] > max(Breakpoints))) )  {
+           (byRN==FALSE && (is.nan(theme[reach])==TRUE | is.na(theme[reach])==TRUE)) ||
+           (byRN==TRUE && cutoff==TRUE && (theme[rn] < min(Breakpoints) || theme[rn] > max(Breakpoints))) ||
+           (byRN==FALSE && cutoff==TRUE && (theme[reach] < min(Breakpoints) || theme[reach] > max(Breakpoints))) )  {
         hexcolor <- nanColor
       } else {
         if (byRN==TRUE){val <- theme[rn]} else {val <- theme[reach]}
@@ -139,10 +154,10 @@ draw_thematic_OCN <- function(theme,OCN,
       }
       if (drawNodes==TRUE){
         lines(c(X[i],X[OCN$FD$downNode[i]]),c(Y[i],Y[OCN$FD$downNode[i]]),
-              lwd=0.5+4.5*(OCN$FD$A[i]/(OCN$FD$nNodes*OCN$cellsize^2))^0.5,col=riverColor)
+              lwd=0.5+4.5*(OCN$FD$A[i]/max(OCN$FD$A[AvailableNodes]))^0.5,col=riverColor)
       } else {
         lines(c(X[i],X[OCN$FD$downNode[i]]),c(Y[i],Y[OCN$FD$downNode[i]]),
-              lwd=0.5+4.5*(OCN$FD$A[i]/(OCN$FD$nNodes*OCN$cellsize^2))^0.5,col=hexcolor)}
+              lwd=0.5+4.5*(OCN$FD$A[i]/max(OCN$FD$A[AvailableNodes]))^0.5,col=hexcolor)}
     }
   }
   
