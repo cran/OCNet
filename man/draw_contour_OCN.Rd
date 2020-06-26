@@ -45,10 +45,10 @@ by pixels such that \code{OCN$FD$A > thrADraw} is drawn.
 # of draw_contour_OCN is very similar to that of draw_simple_OCN)
 draw_contour_OCN(landscape_OCN(OCN_20), thrADraw = 4)
 
-\donttest{
+\dontrun{
 # 2a) plot real shape of multiple-outlet OCN created with periodic boundaries
 # add outlets on top of the rivers
-OCN <- landscape_OCN(OCN_300_4out_PB, displayUpdates = 2) # it takes around one minute
+OCN <- landscape_OCN(OCN_300_4out_PB_hot, displayUpdates = 2) # it takes around one minute
 draw_contour_OCN(OCN, drawOutlets = 2)
 
 # 2b) same as before, but use same color palette for rivers and contours

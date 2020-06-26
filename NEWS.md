@@ -1,3 +1,9 @@
+# OCNet 0.3.1
+
+## Bugs fixed
+
+* `draw_contour_OCN`: corrected issue in example 2
+
 # OCNet 0.3.0
 
 ## Major changes
