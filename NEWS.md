@@ -1,6 +1,20 @@
+# OCNet 0.4.0
+
+## Major changes
+
+* `continue_OCN`: function added
+
+## Bugs fixed
+
+* `paths_OCN`: Fixed bug when number of nodes is very large
+
+## Others
+
+* `create_OCN`: `OCN$energyInit`, `OCN$FD$perm` are added to output
+
 # OCNet 0.3.2
 
-* `CITATION` updated
+* * `CITATION` updated
 
 # OCNet 0.3.1
 
