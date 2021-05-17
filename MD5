@@ -1,11 +1,11 @@
-1f0c1fc344f56ffc802078810684c3fe *DESCRIPTION
+d20a1119133d8f98edc139fd63c3157f *DESCRIPTION
 f59e7273a7594a05442eee92c833eb3c *NAMESPACE
-468827901912527abba8d31262a06ab0 *NEWS.md
+4dccc222a461e1e511222f2fb9350b00 *NEWS.md
 8d412bc228ef2ea77b2aa010e49b0d02 *R/OCN_to_SSN.R
 c91f2a989b4285f65ea80835a603bc33 *R/OCN_to_igraph.R
 65a962ae9a6a6bc739c9a1b3a8b04520 *R/aggregate_OCN.R
 9953a7495192c23aa1ab799df5b8f1e4 *R/continue_OCN.R
-ae422fe9d23526e3dedbe78e89f2f1d9 *R/create_OCN.R
+207c51de30f77432b0fe4caba5f7b509 *R/create_OCN.R
 46d39ec6869c9799edf27b07fc9b2c15 *R/create_peano.R
 323cd62067fd555e16b180fb864ced4b *R/draw_contour_OCN.R
 9d0fd1cdd55ff672a802921b689f07d1 *R/draw_elev2D_OCN.R
@@ -17,7 +17,7 @@ d047fa628e8c74481d47083ba4e23b75 *R/draw_simple_OCN.R
 a57a257cb66f73dfd55e13b37d60ca16 *R/find_area_threshold_OCN.R
 07a5abe73fa037f7efe93df2f42f614c *R/fortranrelated.R
 c41f69d5479283e9148095860c0084b4 *R/landscape_OCN.R
-cf11a9ad7577ab03f514b13743a2d05c *R/paths_OCN.R
+abd391654a574a06655ebe571df9e52d *R/paths_OCN.R
 97c0eb536631771bf8851bd1d8038d6e *R/rivergeometry_OCN.R
 8ff4219d0bffd475d078641523c2230e *build/vignette.rds
 7ade8036fe754ca59e06d15069c7fd1e *data/OCN_20.rda
@@ -28,9 +28,9 @@ bccdb2161eb7237ad6f5ea0e18953939 *data/OCN_300_4out_PB_hot.rda
 f558ab3c802d48ff48956aeec558d074 *data/OCN_4.rda
 2e3a1e7ba106e3c3f655eea1ac6fde66 *data/OCN_400_Allout.rda
 38a032c9f2040a4f98317df8586a2c64 *inst/CITATION
-696b1f7d6aa120eadc146fd7e52f1ad7 *inst/doc/OCNet.R
-3135819067d9f97f075177102b1ef2a1 *inst/doc/OCNet.Rmd
-4a063650e2afb3ca76968ecbeed3b3b6 *inst/doc/OCNet.html
+3025560558a6077ff3b291e5312d7402 *inst/doc/OCNet.R
+6b199c386ac72051a23ed7427dd0d12b *inst/doc/OCNet.Rmd
+eb73cbc123fc57f6a32a68dcabda6c5e *inst/doc/OCNet.html
 06c2dfb9e7f27a074b33b0bdb6694647 *inst/extdata/OCN_3020.png
 8a46d53c5de02dec584dd1463b1ab78a *man/OCN_20.Rd
 4fff07dc97c788ec97681f551063e367 *man/OCN_250_PB.Rd
@@ -55,7 +55,7 @@ b3683991f424ba3fdd5526bf541615a0 *man/continue_OCN.Rd
 bff34d88ddd6b6880e81f8719111d2a4 *man/draw_thematic_OCN.Rd
 99cc01e98a3e189f110b664b44c155bb *man/find_area_threshold_OCN.Rd
 6e055b4e813a8e25842e4251a9ba6ade *man/landscape_OCN.Rd
-6b1228c2a6fdbc35259dadf59162603c *man/paths_OCN.Rd
+1be86876473977a5a34010e75a905926 *man/paths_OCN.Rd
 6bcc155b7555eb6ea490fbfa1dae82f0 *man/rivergeometry_OCN.Rd
 2ae67bb5e83122b2fd0a8bc9b1029502 *src/diagandstuff.f
 eec04f0c01f3e15f3c5d95cde49d31cb *src/exchange.f
@@ -65,7 +65,7 @@ e6252520ecdec3247af811eefe3d3231 *src/invperm.c
 2d4d340b7c68c3e5b7ba1943332d0e5f *src/solves.f
 27bdf9814f91357b771ce4d42b064fd8 *src/spam.f
 0238b5455c1360298d2788edd8363164 *src/update.f
-3135819067d9f97f075177102b1ef2a1 *vignettes/OCNet.Rmd
+6b199c386ac72051a23ed7427dd0d12b *vignettes/OCNet.Rmd
 0b45c0854ad084e070fb07ad54435559 *vignettes/example_networks.png
 3a420334b6016a5631ae62b869a973fa *vignettes/example_networks3.png
 739c2bd9b2b454efcc14ddb819a6b9b5 *vignettes/indices_example.png

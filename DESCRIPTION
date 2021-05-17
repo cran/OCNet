@@ -1,6 +1,6 @@
 Package: OCNet
 Title: Optimal Channel Networks
-Version: 0.4.0
+Version: 0.5.0
 Authors@R: 
     c(person(given = "Luca",
            family = "Carraro",
@@ -41,7 +41,7 @@ Depends: R (>= 3.6)
 Suggests: knitr, rmarkdown, bookdown
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2021-03-02 13:33:59 UTC; carrarlu
+Packaged: 2021-05-17 08:54:00 UTC; carrarlu
 Author: Luca Carraro [aut, cre],
   Florian Altermatt [ctb],
   Emanuel A. Fronhofer [ctb],
@@ -51,4 +51,4 @@ Author: Luca Carraro [aut, cre],
   Enrico Bertuzzo [aut]
 Maintainer: Luca Carraro <luca.carraro@hotmail.it>
 Repository: CRAN
-Date/Publication: 2021-03-02 14:20:02 UTC
+Date/Publication: 2021-05-17 16:30:02 UTC

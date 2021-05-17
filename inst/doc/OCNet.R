@@ -78,7 +78,7 @@ points(OCNwe$AG$X,OCNwe$AG$Y, pch = 21, col = "blue", bg = "blue")
 
 
 ## ---- fig.width=7, fig.height=2.8---------------------------------------------
-OCNwe <- paths_OCN(OCNwe, pathsRN = TRUE)
+OCNwe <- paths_OCN(OCNwe, includePaths = TRUE)
 par(mai=c(0.1,0,0.1,0))
 draw_thematic_OCN(OCNwe$RN$downstreamPathLength[ , OCNwe$RN$outlet], OCNwe, 
                   backgroundColor = "#606060")
