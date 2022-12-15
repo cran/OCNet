@@ -1,6 +1,6 @@
-d20a1119133d8f98edc139fd63c3157f *DESCRIPTION
+e0c63e5d5a01939d0d79b4deecf21918 *DESCRIPTION
 f59e7273a7594a05442eee92c833eb3c *NAMESPACE
-4dccc222a461e1e511222f2fb9350b00 *NEWS.md
+c29f823c6d6ae57f7db4a8cd72c54576 *NEWS.md
 8d412bc228ef2ea77b2aa010e49b0d02 *R/OCN_to_SSN.R
 c91f2a989b4285f65ea80835a603bc33 *R/OCN_to_igraph.R
 65a962ae9a6a6bc739c9a1b3a8b04520 *R/aggregate_OCN.R
@@ -17,9 +17,9 @@ d047fa628e8c74481d47083ba4e23b75 *R/draw_simple_OCN.R
 a57a257cb66f73dfd55e13b37d60ca16 *R/find_area_threshold_OCN.R
 07a5abe73fa037f7efe93df2f42f614c *R/fortranrelated.R
 c41f69d5479283e9148095860c0084b4 *R/landscape_OCN.R
-abd391654a574a06655ebe571df9e52d *R/paths_OCN.R
+500b3a2e9ce70a515ae468a32c363898 *R/paths_OCN.R
 97c0eb536631771bf8851bd1d8038d6e *R/rivergeometry_OCN.R
-8ff4219d0bffd475d078641523c2230e *build/vignette.rds
+298972d3100f64a337511f53bb0da306 *build/vignette.rds
 7ade8036fe754ca59e06d15069c7fd1e *data/OCN_20.rda
 41212c13e54fcb8b804109a1a7ee99fd *data/OCN_250_PB.rda
 45395be7b1e0fc413e9166f12212ee89 *data/OCN_250_T.rda
@@ -30,7 +30,7 @@ f558ab3c802d48ff48956aeec558d074 *data/OCN_4.rda
 38a032c9f2040a4f98317df8586a2c64 *inst/CITATION
 3025560558a6077ff3b291e5312d7402 *inst/doc/OCNet.R
 6b199c386ac72051a23ed7427dd0d12b *inst/doc/OCNet.Rmd
-eb73cbc123fc57f6a32a68dcabda6c5e *inst/doc/OCNet.html
+6642914b94c87dabc6ed6458617b82bd *inst/doc/OCNet.html
 06c2dfb9e7f27a074b33b0bdb6694647 *inst/extdata/OCN_3020.png
 8a46d53c5de02dec584dd1463b1ab78a *man/OCN_20.Rd
 4fff07dc97c788ec97681f551063e367 *man/OCN_250_PB.Rd
@@ -55,7 +55,7 @@ b3683991f424ba3fdd5526bf541615a0 *man/continue_OCN.Rd
 bff34d88ddd6b6880e81f8719111d2a4 *man/draw_thematic_OCN.Rd
 99cc01e98a3e189f110b664b44c155bb *man/find_area_threshold_OCN.Rd
 6e055b4e813a8e25842e4251a9ba6ade *man/landscape_OCN.Rd
-1be86876473977a5a34010e75a905926 *man/paths_OCN.Rd
+02721b610deae0a19ee2cbb6a6d8f3b9 *man/paths_OCN.Rd
 6bcc155b7555eb6ea490fbfa1dae82f0 *man/rivergeometry_OCN.Rd
 2ae67bb5e83122b2fd0a8bc9b1029502 *src/diagandstuff.f
 eec04f0c01f3e15f3c5d95cde49d31cb *src/exchange.f
