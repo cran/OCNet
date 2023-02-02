@@ -1,8 +1,9 @@
 
 aggregate_OCN <- function(OCN,
-                          thrA=0.002*OCN$dimX*OCN$dimY*OCN$cellsize^2,
+                          thrA=0.002*OCN$FD$nNodes*OCN$cellsize^2,
                           streamOrderType="Strahler",
-                          maxReachLength=Inf){
+                          maxReachLength=Inf,
+                          breakpoints=NULL){
   
   if (!("slope" %in% names(OCN$FD))){
     stop('Missing fields in OCN. You should run landscape_OCN prior to aggregate_OCN.')
@@ -13,9 +14,9 @@ aggregate_OCN <- function(OCN,
   }
   #t1 <- Sys.time()
   
-  ###############################
-  ## BUILD NETWORK AT RN LEVEL ##
-  ###############################
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+  # BUILD NETWORK AT RN LEVEL ####
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
   
   #print('Crop data at FD level to RN level...',quote=FALSE); 
   RN_mask <- as.vector(OCN$FD$A >= thrA)# RN_mask allows to sample RN-level values from matrices/vectors at FD level   
@@ -59,6 +60,7 @@ aggregate_OCN <- function(OCN,
   
   OutletNotChannelHead <- (DownNode_RN==0)&(!ChannelHeads)
   IsNodeAG <- SourceOrConfluence|OutletNotChannelHead
+  IsNodeAG[breakpoints] <- TRUE
   whichNodeAG <- which(IsNodeAG)
   
   # Calculate slope for each pixel of the river network 
@@ -87,9 +89,9 @@ aggregate_OCN <- function(OCN,
   }
   
   
-  ###############################
-  ## BUILD NETWORK AT AG LEVEL ##
-  ###############################
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+  # BUILD NETWORK AT AG LEVEL ####
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
   
   # Vector that attributes reach ID to all river network pixels
   #print('Define nodes of aggregated network...',quote=FALSE); 
@@ -197,9 +199,9 @@ aggregate_OCN <- function(OCN,
     SC_to_FD[[k]] <- c(SC_to_FD[[k]],sub_p)
   }
   
-  ######################################
-  ## CALCULATE PROPERTIES AT AG LEVEl ##
-  ######################################
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+  # CALCULATE PROPERTIES AT AG LEVEL ####
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
   
   #print('W matrix at AG level...',quote=FALSE); 
   # Adjacency matrix at reach level
@@ -283,9 +285,9 @@ aggregate_OCN <- function(OCN,
   }
   
   
-  ######################################
-  ## CALCULATE PROPERTIES AT SC LEVEL ##
-  ######################################
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+  # CALCULATE PROPERTIES AT SC LEVEL ####
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
   
   #print(sprintf('Elapsed time %.2f s',difftime(Sys.time(),t1,units='secs')),quote=FALSE) 
   #t1 <- Sys.time()
@@ -324,24 +326,56 @@ aggregate_OCN <- function(OCN,
   
   # build neighbouring nodes at FD level
   # find list of possible neighbouring pixels
-  movement <- matrix(c(0,-1,-1,-1,0,1,1,1,1,1,0,-1,-1,-1,0,1),nrow=2,byrow=TRUE)
-  NeighbouringNodes <- vector("list", OCN$FD$nNodes)
-  cont_node <- 0
-  for (cc in 1:OCN$dimX) {
+  if (length(OCN$typeInitialState)!=0){
+    movement <- matrix(c(0,-1,-1,-1,0,1,1,1,1,1,0,-1,-1,-1,0,1),nrow=2,byrow=TRUE)
+    NeighbouringNodes <- vector("list", OCN$dimX*OCN$dimY)
+    cont_node <- 0
+    for (cc in 1:OCN$dimX) {
+      for (rr in 1:OCN$dimY) {
+        cont_node <- cont_node + 1
+        neigh_r <- rep(rr,8)+movement[1,]
+        neigh_c <- rep(cc,8)+movement[2,]
+        if (OCN$periodicBoundaries == TRUE){
+          neigh_r[neigh_r==0] <- OCN$dimY
+          neigh_c[neigh_c==0] <- OCN$dimX
+          neigh_r[neigh_r>OCN$dimY] <- 1
+          neigh_c[neigh_c>OCN$dimX] <- 1
+        }
+        NotAboundary <- neigh_r>0 & neigh_r<=OCN$dimY & neigh_c>0 & neigh_c<=OCN$dimX # only effective when periodicBoundaries=FALSE
+        NeighbouringNodes[[cont_node]] <- neigh_r[NotAboundary] + (neigh_c[NotAboundary]-1)*OCN$dimY
+      }}
+  } else {
+    # build neighbouring nodes at FD level (for real rivers)
+    movement <- matrix(c(0,-1,-1,-1,0,1,1,1,1,1,0,-1,-1,-1,0,1),nrow=2,byrow=TRUE)
+    NeighbouringNodes <- vector("list", OCN$dimX*OCN$dimY)
+    cont_node <- 0
     for (rr in 1:OCN$dimY) {
-      cont_node <- cont_node + 1
-      neigh_r <- rep(rr,8)+movement[1,]
-      neigh_c <- rep(cc,8)+movement[2,]
-      if (OCN$periodicBoundaries == TRUE){
-        neigh_r[neigh_r==0] <- OCN$dimY
-        neigh_c[neigh_c==0] <- OCN$dimX
-        neigh_r[neigh_r>OCN$dimY] <- 1
-        neigh_c[neigh_c>OCN$dimX] <- 1
-      }
-      NotAboundary <- neigh_r>0 & neigh_r<=OCN$dimY & neigh_c>0 & neigh_c<=OCN$dimX # only effective when periodicBoundaries=FALSE
-      NeighbouringNodes[[cont_node]] <- neigh_r[NotAboundary] + (neigh_c[NotAboundary]-1)*OCN$dimY
+      for (cc in 1:OCN$dimX) {
+        cont_node <- cont_node + 1
+        neigh_r <- rep(rr,8)+movement[1,]
+        neigh_c <- rep(cc,8)+movement[2,]
+        if (OCN$periodicBoundaries == TRUE){
+          neigh_r[neigh_r==0] <- OCN$dimY
+          neigh_c[neigh_c==0] <- OCN$dimX
+          neigh_r[neigh_r>OCN$dimY] <- 1
+          neigh_c[neigh_c>OCN$dimX] <- 1
+        }
+        NotAboundary <- neigh_r>0 & neigh_r<=OCN$dimY & neigh_c>0 & neigh_c<=OCN$dimX # only effective when periodicBoundaries=FALSE
+        NeighbouringNodes[[cont_node]] <- (neigh_r[NotAboundary]-1)*OCN$dimX + neigh_c[NotAboundary]
+      }}
+  }
+  
+  if (OCN$FD$nNodes < OCN$dimX*OCN$dimY){
+    NeighbouringNodes_FD <- vector("list", OCN$FD$nNodes)
+    DEM_to_FD <- numeric(OCN$dimX*OCN$dimY)
+    DEM_to_FD[OCN$FD$toDEM] <- 1:OCN$FD$nNodes
+    for (i in 1:OCN$FD$nNodes){
+      indDEM <- OCN$FD$toDEM[i]
+      tmp <- DEM_to_FD[NeighbouringNodes[[indDEM]]]
+      NeighbouringNodes_FD[[i]] <- tmp[tmp != 0]
     }
-  } 
+    NeighbouringNodes <- NeighbouringNodes_FD
+  }
   
   # Subcatchment adjacency matrix: find which subcatchments have borders in common
   #W_SC <- sparseMatrix(i=1,j=1,x=0,dims=c(Nnodes_SC,Nnodes_SC))
@@ -370,9 +404,9 @@ aggregate_OCN <- function(OCN,
   }
   
   
-  ######################
-  ## EXPORT VARIABLES ##
-  ######################
+  #%%%%%%%%%%%%%%%%%%%%%#
+  # EXPORT VARIABLES ####
+  #%%%%%%%%%%%%%%%%%%%%%#
   
   #FD level
   OCN$FD[["toRN"]] <- FD_to_RN

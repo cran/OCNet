@@ -1,8 +1,26 @@
+# OCNet 0.6.0
+
+## Major changes
+
+* `create_general_contour_OCN`: function added. 
+* `draw_thematic_OCN`: `...` argument and relative example added.
+* `aggregate_OCN`: `breakpoints` argument and relative example added.
+* `OCN_to_SSN`: `obsSites`, `predSites`, `randomAllocation` arguments added.
+
+## Minor changes
+
+* All functions have been updated for consistence/compatibility with `create_general_contour_OCN`.
+* `draw_thematic_OCN`: default option for `theme` added; inverted order of input variables (with backward compatibility maintained); functioning of `colLevels` improved.
+
+## Bugs fixed
+
+* `paths_OCN`: corrected bug for `includeDownstreamNode = TRUE`.
+
 # OCNet 0.5.1
 
 ## Bugs fixed
 
-* `paths_OCN`: corrected bug in export of `downstreamPath`. Option `displayUpdates` added.
+* `paths_OCN`: corrected bug in export of `downstreamPath`. Option `displayUpdates` added. Example in `continue_OCN` modified.
 
 # OCNet 0.5.0
 

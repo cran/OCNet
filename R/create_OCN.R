@@ -45,9 +45,9 @@ create_OCN <- function(dimX,dimY,
   t0 <- Sys.time()
   if (displayUpdates==2){message('Initializing...\n', appendLF = FALSE)}
   
-  ################################## 
-  ## DEFINE INITIAL NETWORK STATE ##  
-  ##################################  
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%# 
+  # DEFINE INITIAL NETWORK STATE ####  
+  #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#  
   
   if ((nOutlet=="All")==TRUE && is.null(typeInitialState)==TRUE){
     typeInitialState <- "H"
@@ -245,9 +245,9 @@ create_OCN <- function(dimX,dimY,
   #Wt <- as.spam.dgCMatrix(Wt)
   
   
-  ##########################
-  ## OCN SEARCH ALGORITHM ##  
-  ##########################  
+  #%%%%%%%%%%%%%%%%%%%%%%%%%#
+  # OCN SEARCH ALGORITHM ####  
+  #%%%%%%%%%%%%%%%%%%%%%%%%%#  
   
   # initialize energy and temperatures
   Energy <- numeric(nIter)
@@ -305,7 +305,10 @@ create_OCN <- function(dimX,dimY,
       Energy_new <- 100*Energy_0
       node <- sample(AvailableNodes,1)
       # change downstream connection from chosen node
-      down_new <- sample(NeighbouringNodes[[node]][NeighbouringNodes[[node]]!=DownNode[node]],1) # sample one node from list of neighbouring nodes, excluding the one that was previously connected to node
+      tmp <- NeighbouringNodes[[node]][NeighbouringNodes[[node]]!=DownNode[node]]
+      if (length(tmp)==1){tmp <- c(tmp,tmp)} # patch for sample's surprise
+      if (length(tmp)==0){tmp <- c(node,node)} # patch for no alternative directions
+      down_new <- sample(tmp,1) # sample one node from list of neighbouring nodes, excluding the one that was previously connected to node
       
       ind1 <- (X[NeighbouringNodes[[node]]]==X[node] & Y[NeighbouringNodes[[node]]]==Y[down_new])
       Node1 <- NeighbouringNodes[[node]][ind1]
@@ -379,9 +382,10 @@ create_OCN <- function(dimX,dimY,
       }
     }
   }
-  ######################
-  ## EXPORT VARIABLES ##
-  ######################
+  
+  #%%%%%%%%%%%%%%%%%%%%%#
+  # EXPORT VARIABLES ####
+  #%%%%%%%%%%%%%%%%%%%%%#
   
   #W <- as.dgCMatrix.spam(t(Wt)) # ensure compatibility with other functions
   W <- t(Wt)
@@ -389,7 +393,7 @@ create_OCN <- function(dimX,dimY,
   FD <- list(A=A*cellsize^2,W=W,downNode=DownNode,X=X,Y=Y,nNodes=Nnodes,outlet=OutletPixel,perm=pl)
   OCN <- list(FD=FD,dimX=dimX,dimY=dimY,cellsize=cellsize,nOutlet=nOutlet,periodicBoundaries=periodicBoundaries,
               expEnergy=expEnergy,coolingRate=coolingRate,typeInitialState=typeInitialState,nIter=nIter,initialNoCoolingPhase=initialNoCoolingPhase,
-              energyInit=Energy_0)
+              energyInit=Energy_0,xllcorner=xllcorner,yllcorner=yllcorner)
   
   if (saveEnergy==TRUE) {OCN[["energy"]] <- Energy}
   if (saveExitFlag==TRUE) {OCN[["exitFlag"]] <- ExitFlag}
@@ -404,9 +408,9 @@ create_OCN <- function(dimX,dimY,
 }
 
 
-#########################################
-## AUXILIARY FUNCTION initialstate_OCN ##
-#########################################
+#%%%%%%%%%%%%%%%%%%%%%%%%#
+# AUXILIARY FUNCTIONS ####
+#%%%%%%%%%%%%%%%%%%%%%%%%#
 
 initialstate_OCN <- function(dimX,dimY,nOutlet,outletSide,outletPos,typeInitialState){
   
