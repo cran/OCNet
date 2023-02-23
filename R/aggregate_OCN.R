@@ -3,7 +3,8 @@ aggregate_OCN <- function(OCN,
                           thrA=0.002*OCN$FD$nNodes*OCN$cellsize^2,
                           streamOrderType="Strahler",
                           maxReachLength=Inf,
-                          breakpoints=NULL){
+                          breakpoints=NULL,
+                          displayUpdates=FALSE){
   
   if (!("slope" %in% names(OCN$FD))){
     stop('Missing fields in OCN. You should run landscape_OCN prior to aggregate_OCN.')
@@ -18,6 +19,8 @@ aggregate_OCN <- function(OCN,
   # BUILD NETWORK AT RN LEVEL ####
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
   
+  if(displayUpdates){message("Calculating network at RN level...      \r", appendLF = FALSE)}
+  
   #print('Crop data at FD level to RN level...',quote=FALSE); 
   RN_mask <- as.vector(OCN$FD$A >= thrA)# RN_mask allows to sample RN-level values from matrices/vectors at FD level   
   RN_to_FD <- which(RN_mask) # RN_to_FD[i] is the pixel ID at the FD level of the pixel whose ID at the RN level is i
@@ -30,7 +33,7 @@ aggregate_OCN <- function(OCN,
   W_RN <- W_RN[,RN_mask,drop=FALSE]
   
   Outlet_RN <- FD_to_RN[OCN$FD$outlet]
-  Outlet_RN <- Outlet_RN[Outlet_RN!=0] # remove outlets if the corresponding catchment size is lower than thrAeshold
+  Outlet_RN <- Outlet_RN[Outlet_RN!=0] # remove outlets if the corresponding catchment size is lower than threshold
   DownNode_RN <- numeric(Nnodes_RN)
   # for (i in 1:Nnodes_RN){
   #   if (!(i %in% Outlet_RN)){
@@ -39,6 +42,12 @@ aggregate_OCN <- function(OCN,
   tmp <- W_RN@rowpointers
   NotOutlet <- which((tmp[-1] - tmp[-length(tmp)])==1)
   DownNode_RN[NotOutlet] <- W_RN@colindices
+  
+  # reverse downNode_RN
+  DownNode_RN_rev <- vector("list",Nnodes_RN)
+  for (i in 1:Nnodes_RN){
+    d <- DownNode_RN[i]
+    if (d!=0){DownNode_RN_rev[[d]] <- c(DownNode_RN_rev[[d]],i)  }}
   
   A_RN <- OCN$FD$A[RN_mask]
   X_RN <- OCN$FD$X[RN_mask]
@@ -68,30 +77,81 @@ aggregate_OCN <- function(OCN,
   #print(sprintf('Elapsed time %.2f s',difftime(Sys.time(),t1,units='secs')),quote=FALSE)
   #t1 <- Sys.time()
   
-  # Upstream_RN : list containing IDs of all nodes upstream of each node (plus node itself)
+  # # Upstream_RN : list containing IDs of all nodes upstream of each node (plus node itself)
+  # # old version
+  # t0 <- Sys.time()
+  # Upstream_RN <- vector("list",Nnodes_RN)
+  # Nupstream_RN <- numeric(Nnodes_RN)
+  # for (i in 1:Nnodes_RN){
+  #   #UpOneLevel <- DownNode_RN_rev[[i]]
+  #   UpOneLevel <- which(DownNode_RN==i) # find reaches at one level upstream
+  #   Upstream_RN[[i]] <- UpOneLevel      # add them to the list
+  #   while (length(UpOneLevel)!=0) { # continue until there are no more reaches upstream
+  #     ContinuePath <- UpOneLevel # jump 1 level above
+  #     #UpOneLevel <- numeric(0)
+  #     #for (k in ContinuePath){UpOneLevel <- c(UpOneLevel, DownNode_RN_rev[[k]])}
+  #     UpOneLevel <- which(DownNode_RN %in% ContinuePath) # find reaches at one level upstream
+  #     Upstream_RN[[i]] <- c(Upstream_RN[[i]],UpOneLevel) # add them to the list
+  #   }
+  #   Upstream_RN[[i]] <- c(Upstream_RN[[i]],i)
+  #   Nupstream_RN[i] <- length(Upstream_RN[[i]])
+  #   if (displayUpdates){
+  #     if ((i %% round(Nnodes_RN*0.01))==0){
+  #       message(sprintf("Calculating network at RN level... %.1f%%\r",i/Nnodes_RN*100), appendLF = FALSE)}}
+  # }
+  # t1 <- Sys.time()
+  # Upstream_RN_old <- Upstream_RN; Nupstream_RN_old <- Nupstream_RN
+  # t2 <- Sys.time()
+  # # new version
+  # Upstream_RN <- vector("list",Nnodes_RN)
+  # Nupstream_RN <- numeric(Nnodes_RN)
+  # for (i in 1:Nnodes_RN){
+  #   UpOneLevel <- as.numeric(DownNode_RN_rev[[i]])
+  #   #UpOneLevel <- which(DownNode_RN==i) # find reaches at one level upstream
+  #   Upstream_RN[[i]] <- UpOneLevel      # add them to the list
+  #   while (length(UpOneLevel)!=0) { # continue until there are no more reaches upstream
+  #     ContinuePath <- UpOneLevel # jump 1 level above
+  #     UpOneLevel <- numeric(0)
+  #     for (k in ContinuePath){UpOneLevel <- c(UpOneLevel, DownNode_RN_rev[[k]])}
+  #     #UpOneLevel <- which(DownNode_RN %in% ContinuePath) # find reaches at one level upstream
+  #     Upstream_RN[[i]] <- c(Upstream_RN[[i]],UpOneLevel) # add them to the list
+  #   }
+  #   Upstream_RN[[i]] <- c(Upstream_RN[[i]],i)
+  #   Nupstream_RN[i] <- length(Upstream_RN[[i]])
+  #   if (displayUpdates){
+  #     if ((i %% round(Nnodes_RN*0.01))==0){
+  #     message(sprintf("Calculating network at RN level... %.1f%%\r",i/Nnodes_RN*100), appendLF = FALSE)}}
+  #   if (length(Upstream_RN)<Nnodes_RN){ stop("Length issue")}
+  # }
+  # t3 <- Sys.time()
+  # difftime(t1,t0)
+  # difftime(t3,t2)
+  
+  # sort nodes in downstream direction
+  ind_sort <- sort(A_RN, index.return=TRUE)
+  ind_sort <- ind_sort$ix
   Upstream_RN <- vector("list",Nnodes_RN)
   Nupstream_RN <- numeric(Nnodes_RN)
   for (i in 1:Nnodes_RN){
-    UpOneLevel <- which(DownNode_RN==i) # find reaches at one level upstream
-    Upstream_RN[[i]] <- UpOneLevel      # add them to the list
-    while (length(UpOneLevel)!=0) { # continue until there are no more reaches upstream
-      ContinuePath <- UpOneLevel # jump 1 level above
-      UpOneLevel <- which(DownNode_RN %in% ContinuePath) # find reaches at one level upstream
-      Upstream_RN[[i]] <- c(Upstream_RN[[i]],UpOneLevel) # add them to the list
-    }
-    Upstream_RN[[i]] <- c(Upstream_RN[[i]],i)
-    Nupstream_RN[i] <- length(Upstream_RN[[i]])
+    ups <- as.numeric(DownNode_RN_rev[[ind_sort[i]]])
+    nodes <- numeric(0)
+    for (u in ups){ nodes <- c(nodes, Upstream_RN[[u]])}
+    Upstream_RN[[ind_sort[i]]] <- c(nodes, ind_sort[i])
+    Nupstream_RN[ind_sort[i]] <- length(Upstream_RN[[ind_sort[i]]])
   }
+  
   # RN_to_CM[i] indicates outlet to which reach i drains
   RN_to_CM <- numeric(Nnodes_RN)
   for (i in 1:OCN$nOutlet){
     RN_to_CM[Upstream_RN[[Outlet_RN[i]]]] <- i
   }
-  
+  if (displayUpdates){message("Calculating network at RN level... 100.0%\n", appendLF = FALSE)}
   
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
   # BUILD NETWORK AT AG LEVEL ####
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+  
+  if(displayUpdates){message("Calculating network at AG level...      \r", appendLF = FALSE)}
   
   # Vector that attributes reach ID to all river network pixels
   #print('Define nodes of aggregated network...',quote=FALSE); 
@@ -225,20 +285,41 @@ aggregate_OCN <- function(OCN,
   W_AG[ind] <- 1
   Outlet_AG <- RN_to_AG[Outlet_RN]
   
+  # reverse downNode_AG
+  DownNode_AG_rev <- vector("list",Nnodes_AG)
+  for (i in 1:Nnodes_AG){
+    d <- DownNode_AG[i]
+    if (d!=0){DownNode_AG_rev[[d]] <- c(DownNode_AG_rev[[d]],i)  }}
+  
   # Upstream_AG : list containing IDs of all reaches upstream of each reach (plus reach itself)
+  # sort nodes in downstream direction
+  ind_sort <- sort(A_AG, index.return=TRUE)
+  ind_sort <- ind_sort$ix
   Upstream_AG <- vector("list",Nnodes_AG)
   Nupstream_AG <- numeric(Nnodes_AG)
   for (i in 1:Nnodes_AG){
-    UpOneLevel <- which(DownNode_AG==i) # find reaches at one level upstream
-    Upstream_AG[[i]] <- UpOneLevel      # add them to the list
-    while (length(UpOneLevel)!=0) { # continue until there are no more reaches upstream
-      ContinuePath <- UpOneLevel # jump 1 level above
-      UpOneLevel <- which(DownNode_AG %in% ContinuePath) # find reaches at one level upstream
-      Upstream_AG[[i]] <- c(Upstream_AG[[i]],UpOneLevel) # add them to the list
-    }
-    Upstream_AG[[i]] <- c(Upstream_AG[[i]],i)
-    Nupstream_AG[i] <- length(Upstream_AG[[i]])
+    ups <- as.numeric(DownNode_AG_rev[[ind_sort[i]]])
+    nodes <- numeric(0)
+    for (u in ups){ nodes <- c(nodes, Upstream_AG[[u]])}
+    Upstream_AG[[ind_sort[i]]] <- c(nodes, ind_sort[i])
+    Nupstream_AG[ind_sort[i]] <- length(Upstream_AG[[ind_sort[i]]])
   }
+  # Upstream_AG <- vector("list",Nnodes_AG)
+  # Nupstream_AG <- numeric(Nnodes_AG)
+  # for (i in 1:Nnodes_AG){
+  #   UpOneLevel <- which(DownNode_AG==i) # find reaches at one level upstream
+  #   Upstream_AG[[i]] <- UpOneLevel      # add them to the list
+  #   while (length(UpOneLevel)!=0) { # continue until there are no more reaches upstream
+  #     ContinuePath <- UpOneLevel # jump 1 level above
+  #     UpOneLevel <- which(DownNode_AG %in% ContinuePath) # find reaches at one level upstream
+  #     Upstream_AG[[i]] <- c(Upstream_AG[[i]],UpOneLevel) # add them to the list
+  #   }
+  #   Upstream_AG[[i]] <- c(Upstream_AG[[i]],i)
+  #   Nupstream_AG[i] <- length(Upstream_AG[[i]])
+  #   if (displayUpdates){
+  #     if ((i %% round(Nnodes_AG*0.001))==0){
+  #     message(sprintf("Calculating network at AG level... %.1f%%\r",i/Nnodes_AG*100), appendLF = FALSE)}}
+  # }
   # AG_to_CM[i] indicates outlet to which reach i drains
   AG_to_CM <- numeric(Nnodes_AG)
   for (i in 1:OCN$nOutlet){
@@ -284,10 +365,13 @@ aggregate_OCN <- function(OCN,
     Slope_AG[i] <- (Slope_RN[RN_to_AG==i] %*% Length_RN[RN_to_AG==i])/Length_AG[i] # scalar product between vector of slopes and lengths of nodes at RN level belonging to reach i 
   }
   
+  if(displayUpdates){message("Calculating network at AG level... 100.0%\n", appendLF = FALSE)}
   
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
   # CALCULATE PROPERTIES AT SC LEVEL ####
   #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+  
+  if(displayUpdates){message("Calculating network at SC level...      \r", appendLF = FALSE)}
   
   #print(sprintf('Elapsed time %.2f s',difftime(Sys.time(),t1,units='secs')),quote=FALSE) 
   #t1 <- Sys.time()
@@ -326,7 +410,7 @@ aggregate_OCN <- function(OCN,
   
   # build neighbouring nodes at FD level
   # find list of possible neighbouring pixels
-  if (length(OCN$typeInitialState)!=0){
+  if (length(OCN$typeInitialState)!=0 | OCN$FD$nNodes==OCN$dimX*OCN$dimY){ # all OCNs
     movement <- matrix(c(0,-1,-1,-1,0,1,1,1,1,1,0,-1,-1,-1,0,1),nrow=2,byrow=TRUE)
     NeighbouringNodes <- vector("list", OCN$dimX*OCN$dimY)
     cont_node <- 0
@@ -345,27 +429,45 @@ aggregate_OCN <- function(OCN,
         NeighbouringNodes[[cont_node]] <- neigh_r[NotAboundary] + (neigh_c[NotAboundary]-1)*OCN$dimY
       }}
   } else {
-    # build neighbouring nodes at FD level (for real rivers)
     movement <- matrix(c(0,-1,-1,-1,0,1,1,1,1,1,0,-1,-1,-1,0,1),nrow=2,byrow=TRUE)
     NeighbouringNodes <- vector("list", OCN$dimX*OCN$dimY)
-    cont_node <- 0
-    for (rr in 1:OCN$dimY) {
-      for (cc in 1:OCN$dimX) {
-        cont_node <- cont_node + 1
-        neigh_r <- rep(rr,8)+movement[1,]
-        neigh_c <- rep(cc,8)+movement[2,]
-        if (OCN$periodicBoundaries == TRUE){
-          neigh_r[neigh_r==0] <- OCN$dimY
-          neigh_c[neigh_c==0] <- OCN$dimX
-          neigh_r[neigh_r>OCN$dimY] <- 1
-          neigh_c[neigh_c>OCN$dimX] <- 1
-        }
-        NotAboundary <- neigh_r>0 & neigh_r<=OCN$dimY & neigh_c>0 & neigh_c<=OCN$dimX # only effective when periodicBoundaries=FALSE
-        NeighbouringNodes[[cont_node]] <- (neigh_r[NotAboundary]-1)*OCN$dimX + neigh_c[NotAboundary]
-      }}
+    for (i in 1:OCN$FD$nNodes){
+      nodeDEM <- OCN$FD$toDEM[i]
+      cc <- (nodeDEM %% OCN$dimX); if (cc==0) cc <- OCN$dimX
+      rr <- (nodeDEM - cc)/OCN$dimX + 1
+      neigh_r <- rep(rr,8)+movement[1,]
+      neigh_c <- rep(cc,8)+movement[2,]
+      if (OCN$periodicBoundaries == TRUE){
+        neigh_r[neigh_r==0] <- OCN$dimY
+        neigh_c[neigh_c==0] <- OCN$dimX
+        neigh_r[neigh_r>OCN$dimY] <- 1
+        neigh_c[neigh_c>OCN$dimX] <- 1
+      }
+      NotAboundary <- neigh_r>0 & neigh_r<=OCN$dimY & neigh_c>0 & neigh_c<=OCN$dimX # only effective when periodicBoundaries=FALSE
+      NeighbouringNodes[[nodeDEM]] <- (neigh_r[NotAboundary]-1)*OCN$dimX + neigh_c[NotAboundary]
+    }
+    # # build neighbouring nodes at FD level (for real rivers)
+    # movement <- matrix(c(0,-1,-1,-1,0,1,1,1,1,1,0,-1,-1,-1,0,1),nrow=2,byrow=TRUE)
+    # NeighbouringNodes <- vector("list", OCN$dimX*OCN$dimY)
+    # cont_node <- 0
+    # for (rr in 1:OCN$dimY) {
+    #   for (cc in 1:OCN$dimX) {
+    #     cont_node <- cont_node + 1
+    #     neigh_r <- rep(rr,8)+movement[1,]
+    #     neigh_c <- rep(cc,8)+movement[2,]
+    #     if (OCN$periodicBoundaries == TRUE){
+    #       neigh_r[neigh_r==0] <- OCN$dimY
+    #       neigh_c[neigh_c==0] <- OCN$dimX
+    #       neigh_r[neigh_r>OCN$dimY] <- 1
+    #       neigh_c[neigh_c>OCN$dimX] <- 1
+    #     }
+    #     NotAboundary <- neigh_r>0 & neigh_r<=OCN$dimY & neigh_c>0 & neigh_c<=OCN$dimX # only effective when periodicBoundaries=FALSE
+    #     NeighbouringNodes[[cont_node]] <- (neigh_r[NotAboundary]-1)*OCN$dimX + neigh_c[NotAboundary]
+    #   }}
+
   }
-  
-  if (OCN$FD$nNodes < OCN$dimX*OCN$dimY){
+
+  if (OCN$FD$nNodes < OCN$dimX*OCN$dimY){ # general contour OCNs and real rivers
     NeighbouringNodes_FD <- vector("list", OCN$FD$nNodes)
     DEM_to_FD <- numeric(OCN$dimX*OCN$dimY)
     DEM_to_FD[OCN$FD$toDEM] <- 1:OCN$FD$nNodes
@@ -377,23 +479,46 @@ aggregate_OCN <- function(OCN,
     NeighbouringNodes <- NeighbouringNodes_FD
   }
   
-  # Subcatchment adjacency matrix: find which subcatchments have borders in common
-  #W_SC <- sparseMatrix(i=1,j=1,x=0,dims=c(Nnodes_SC,Nnodes_SC))
+  # # Subcatchment adjacency matrix: find which subcatchments have borders in common
+  # #W_SC <- sparseMatrix(i=1,j=1,x=0,dims=c(Nnodes_SC,Nnodes_SC))
+  # W_SC <- spam(0,Nnodes_SC,Nnodes_SC)
+  # indices <- matrix(0,Nnodes_SC,2)
+  # for (i in 1:Nnodes_SC){
+  #   for (k in 1:length(SC_to_FD[[i]])){
+  #     ind <- SC_to_FD[[i]][k]
+  #     if (length(ind)>0) {
+  #       set <- NeighbouringNodes[[ind]]
+  #       NeighSubcatch <- FD_to_SC[set]
+  #       NeighSubcatch <- NeighSubcatch[!is.nan(NeighSubcatch)]
+  #       Border <- which(NeighSubcatch!=i)
+  #       if (length(Border)>0) {
+  #         W_SC[i,unique(NeighSubcatch[Border])] <- 1
+  #         }}
+  #   }
+  #   if (displayUpdates){
+  #     if ((i %% max(1,round(Nnodes_SC*0.01)))==0){
+  #     message(sprintf("Calculating network at SC level... %.1f%%\r",i/Nnodes_AG*100), appendLF = FALSE)}}
+  # }
+  
+  # alternative
   W_SC <- spam(0,Nnodes_SC,Nnodes_SC)
-  indices <- matrix(0,Nnodes_SC,2)
+  indices <- matrix(0,Nnodes_SC*20,2)
+  k <- 1
   for (i in 1:Nnodes_SC){
-    for (k in 1:length(SC_to_FD[[i]])){
-      ind <- SC_to_FD[[i]][k]
-      if (length(ind)>0) {
-        set <- NeighbouringNodes[[ind]]
-        NeighSubcatch <- FD_to_SC[set]
-        NeighSubcatch <- NeighSubcatch[!is.nan(NeighSubcatch)]
-        Border <- which(NeighSubcatch!=i)
-        if (length(Border)>0) {
-          W_SC[i,unique(NeighSubcatch[Border])] <- 1
-          }}
-    }
+    set <- SC_to_FD[[i]]
+    nodes <- numeric(0)
+    for (s in set){ nodes <- c(nodes, NeighbouringNodes[[s]])}
+    NeighSubcatch <- setdiff(unique(FD_to_SC[nodes]), i)
+    indices[k:(k+length(NeighSubcatch)-1),1] <- i
+    indices[k:(k+length(NeighSubcatch)-1),2] <- NeighSubcatch
+    k <- k + length(NeighSubcatch)
+    if (displayUpdates){
+      if ((i %% max(1,round(Nnodes_SC*0.01)))==0){
+        message(sprintf("Calculating network at SC level... %.1f%%\r",i/Nnodes_AG*100), appendLF = FALSE)}}
   }
+  indices <- indices[1:(k-1),]
+  W_SC[indices] <- 1  
+  
   
   # X,Y of subcatchment centroids
   X_SC <- numeric(Nnodes_SC)
@@ -403,6 +528,7 @@ aggregate_OCN <- function(OCN,
     Y_SC[i] <- mean(OCN$FD$Y[SC_to_FD[[i]]])
   }
   
+  if(displayUpdates){message("Calculating network at SC level... 100.0%\n", appendLF = FALSE)}
   
   #%%%%%%%%%%%%%%%%%%%%%#
   # EXPORT VARIABLES ####

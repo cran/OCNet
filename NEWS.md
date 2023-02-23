@@ -1,3 +1,19 @@
+# OCNet 0.7.0
+
+## Major changes
+
+* `create_OCN`: initialization algorithm improved.
+* `landscape_OCN`: algorithm improved.
+* `aggregate_OCN`: `displayUpdates` argument added. Improved algorithm.
+* `paths_OCN`: `level` argument added.
+* `draw_thematic_OCN`: algorithm improved.
+* `draw_subcatchments_OCN`: `theme` argument and relative example added.
+* `min_lwd` and `max_lwd` added to all drawing functions.
+
+## Bugs fixed
+
+* `paths_OCN`: Fixed bug when number of nodes is very large
+
 # OCNet 0.6.0
 
 ## Major changes
