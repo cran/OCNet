@@ -7,7 +7,7 @@ draw_simple_OCN(OCN, thrADraw = 0.002 * OCN$FD$nNodes *
   min_lwd = 0.5,  max_lwd = 5)
 }
 \arguments{
-\item{OCN}{List as produced by \code{\link{create_OCN}}.}
+\item{OCN}{A \code{river} object as produced by \code{\link{create_OCN}}.}
 
 \item{thrADraw}{Threshold drainage area value used to display the network.}
 
@@ -26,9 +26,9 @@ Function that plots the non-aggregated OCN as calculated by \code{create_OCN}.
 \examples{
 # 1a) draw OCN with default settings
 draw_simple_OCN(OCN_250_T)
+\donttest{
 # 1b) same as above, but with decreased thrADraw
 draw_simple_OCN(OCN_250_T, thrADraw = 0.001 * OCN_250_T$dimX * OCN_250_T$dimY)
-\donttest{
 # 1c) same as the first example, but include the portion of network  
 # with drainage area lower than thrADraw 
 draw_simple_OCN(OCN_250_T, easyDraw = FALSE) # this will take some seconds

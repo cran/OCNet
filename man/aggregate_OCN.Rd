@@ -7,7 +7,7 @@ aggregate_OCN(OCN, thrA = 0.002 * OCN$FD$nNodes *
   breakpoints = NULL, displayUpdates = FALSE)
 }
 \arguments{
-\item{OCN}{List as produced by \code{\link{landscape_OCN}}.}
+\item{OCN}{A \code{river} object as produced by \code{\link{landscape_OCN}}.}
 
 \item{thrA}{Threshold value on drainage area used to derive the aggregated network. If \code{thrA = 0}, no aggregation is performed: 
 every FD node is also a node at the RN and AG levels. In this case, the function \code{aggregate_OCN} can still be used to compute statistics 
@@ -17,18 +17,19 @@ such as \code{OCN$AG$streamOrder}.}
 
 \item{maxReachLength}{Maximum reach length allowed (in planar units). If the path length between a channel head and the downstream confluence 
 is higher than \code{maxReachLength}, the reach starting from the channel head will have a length up to \code{maxReachLength}, while the next downstream 
-pixel is considered as a new channel head, from which a new reach departs.}
+pixel is considered as a new channel head, from which a new reach departs. Values lower than \code{OCN$cellsize*sqrt(2)} are not allowed. If 
+\code{maxReachLength < 2*OCN$cellsize}, every RN node is also an AG node.}
 
 \item{breakpoints}{Indices of additional nodes at the RN level that should be also nodes at the AG level (beyond source, confluence, outlet nodes 
 and AG nodes determined via \code{maxReachLength}). To determine such indices, a preliminary run of \code{aggregate_OCN} with the same \code{thrA} 
 would be required (see example 3).}
 
-\item{displayUpdates}{Logical. State if updates are printed on the console while \code{landscape_OCN} runs.}
+\item{displayUpdates}{Logical. State if updates are printed on the console while \code{aggregate_OCN} runs.}
 
 }
 \value{
-A list that contains all objects contained in \code{OCN}, in addition to the objects listed below. 
-New sublists RN, AG, SC, containing variables at the corresponding aggregation levels, are created.
+A \code{river} object that contains all objects contained in \code{OCN}, in addition to the objects listed below. 
+New sublists \code{RN}, \code{AG}, \code{SC}, containing variables at the corresponding aggregation levels, are created.
 Refer to section 4.2 of the \href{../doc/OCNet.html}{vignette} for a more detailed explanation on values \code{OCN$XX$toYY}, where \code{XX} and \code{YY} are two random aggregation levels.
 \item{\code{FD$toRN}}{Vector (of length \code{OCN$FD$nNodes}) whose values are equal to 0 if the FD node is not a node at the RN level. 
 If \code{FD$toRN[i] != 0}, then \code{FD$toRN[i]} is the index at the RN level of the node whose index at the FD level is \code{i}. Thereby, 
@@ -107,7 +108,7 @@ In this case, the indices from \code{AG$nNodes + 1} to \code{SC$nNodes} identify
 \item{\code{SC$toFD}}{List (of length \code{SC$nNodes}) whose object \code{i} is a vector of indices of FD pixels constituting the subcatchment \code{i}.}
 \item{\code{SC$X}, \code{SC$Y}}{Vectors (of length \code{SC$nNodes}) of X, Y coordinates (in planar units) of subcatchment centroids.}
 \item{\code{SC$Z}}{Vector (of length \code{SC$nNodes}) of average subcatchment elevation (in elevational units).}
-Finally, \code{thrA} is added to the list.
+Finally, \code{thrA} is added to the \code{river} object.
 }
 \description{
 Function that, given an OCN, builds the network at the river network (RN), aggregated (AG), subcatchment (SC), and catchment (CM) levels.
@@ -119,8 +120,16 @@ a subcatchment at the SC level that shares the same index: for instance, \code{S
 are also part of subcatchment \code{i}).
 }
 \examples{
-# 1) aggregate a 20x20 OCN by imposing thrA = 4
+# 1a) aggregate a 20x20 OCN by imposing thrA = 4. 
 OCN <- aggregate_OCN(landscape_OCN(OCN_20), thrA = 4)
+draw_thematic_OCN(OCN, drawNodes = TRUE)
+
+\donttest{
+# 1b) same as above, but identify all RN nodes as AG nodes
+mrl <- 1.5*OCN_20$cellsize
+OCN2 <- aggregate_OCN(landscape_OCN(OCN_20), thrA = 4, maxReachLength = mrl)
+draw_thematic_OCN(OCN2, drawNodes = TRUE)
+}
 
 \donttest{
 # 2) explore the effects of thrA and maxReachLength on a large OCN
