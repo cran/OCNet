@@ -1,3 +1,14 @@
+# OCNet 1.1.0
+
+## Major changes
+
+* `paths_OCN`: `whichNodes` argument and relative example added.
+* `OCN_to_AEM`: function added.
+
+## Bugs fixed
+
+* `paths_OCN`: bug fixed for rivers with multiple outlets.
+
 # OCNet 1.0.1
 
 ## Minor changes
