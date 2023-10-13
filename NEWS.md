@@ -1,3 +1,15 @@
+# OCNet 1.2.0
+
+## Major changes
+
+* `OCN_to_SSN`: disabled following archiving of package `SSN` from CRAN.
+
+## Minor changes
+
+* `create_general_contour_OCN`: documentation updated.
+* `OCN_to_AEM`: error message updated.
+* `OCN_to_AEM`: `moranI` option added.
+
 # OCNet 1.1.0
 
 ## Major changes
