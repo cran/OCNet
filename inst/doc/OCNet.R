@@ -10,7 +10,7 @@ suppressPackageStartupMessages(library(spam))
 suppressPackageStartupMessages(library(igraph))
 
 
-## ----fig.width=7, fig.height=2------------------------------------------------
+## ---- fig.width=7, fig.height=2-----------------------------------------------
 set.seed(1)
 OCN <- create_OCN(30, 20, outletPos = 1)
 OCN <- aggregate_OCN(landscape_OCN(OCN), thrA = 3)
@@ -50,14 +50,14 @@ ex$AG$ReachToRN
 ex$SC$toFD
 
 
-## ----fig.width=4, fig.height=4------------------------------------------------
+## ---- fig.width=4, fig.height=4-----------------------------------------------
 set.seed(1)
 OCNwe <- create_OCN(20, 20, outletPos = 3, cellsize = 500)
 par(mai=c(0,0,0,0))
 draw_simple_OCN(OCNwe)
 
 
-## ----fig.width=7, fig.height=2.8----------------------------------------------
+## ---- fig.width=7, fig.height=2.8---------------------------------------------
 OCNwe <- landscape_OCN(OCNwe, slope0 = 0.01)
 par(mai=c(0,0,0,0.5))
 draw_elev3D_OCN(OCNwe, drawRiver = FALSE)
@@ -70,14 +70,14 @@ indThr <- which(abs(thr$nNodesAG - 20) == min(abs(thr$nNodesAG - 20)))
 indThr <- max(indThr) # pick the last ind_thr that satisfies the condition above
 thrA20 <- thr$thrValues[indThr] # corresponding threshold area
 
-## ----fig.width=7, fig.height=2.8----------------------------------------------
+## ---- fig.width=7, fig.height=2.8---------------------------------------------
 OCNwe <- aggregate_OCN(OCNwe, thrA = thrA20)
 par(mai=c(0.1,0,0.1,0))
 draw_subcatchments_OCN(OCNwe)
 points(OCNwe$AG$X,OCNwe$AG$Y, pch = 21, col = "blue", bg = "blue")
 
 
-## ----fig.width=7, fig.height=2.8----------------------------------------------
+## ---- fig.width=7, fig.height=2.8---------------------------------------------
 OCNwe <- paths_OCN(OCNwe, includePaths = TRUE)
 par(mai=c(0.1,0,0.1,0))
 draw_thematic_OCN(OCNwe$RN$downstreamPathLength[ , OCNwe$RN$outlet], OCNwe, 
@@ -137,7 +137,7 @@ for (t in 2:nTimestep){
   }
 }
 
-## ----fig.width=7, fig.height=2.8----------------------------------------------
+## ---- fig.width=7, fig.height=2.8---------------------------------------------
 par(mfrow = c(1, 2))
 plot(pop[OCNwe$RN$outlet, ], type = "l", ylim = c(0, 1.05*K[OCNwe$RN$outlet]), col = "red", 
      xlab = "Time", ylab = "Population", lwd = 2)
@@ -152,7 +152,7 @@ plot(colSums(pop), type = "l", xlab = "Time", ylab = "Population", lwd = 2, ylim
 lines(c(1, nTimestep), c(sum(K),sum(K)), lty = 2)
 title("Evolution of metapop. size")
 
-## ----fig.width=7, fig.height=5------------------------------------------------
+## ---- fig.width=7, fig.height=5-----------------------------------------------
 par(mfrow = c(2, 2), mai = c(0.1, 0, 0.2, 0))
 draw_thematic_OCN(pop[,1], OCNwe, colLevels = c(0, max(K), 1000),
                   drawNodes = TRUE)
@@ -168,7 +168,7 @@ draw_thematic_OCN(pop[,100], OCNwe, colLevels = c(0, max(K), 1000),
 title("Time = 100")
 
 
-## ----fig.width=7, fig.height=5------------------------------------------------
+## ---- fig.width=7, fig.height=5-----------------------------------------------
 par(mfrow = c(2, 3), mai = c(0, 0, 0.2, 0))
 peano0 <- create_peano(0)
 draw_simple_OCN(peano0)
@@ -195,19 +195,19 @@ draw_simple_OCN(peano5)
 title("Iteration: 5 - Lattice size: 64x64")
 
 
-## ----fig.width=5, fig.height=3.5----------------------------------------------
+## ---- fig.width=5, fig.height=3.5---------------------------------------------
 par(mai = c(0, 0, 0, 0))
 peano5 <- landscape_OCN(peano5)
 draw_elev2D_OCN(peano5)
 
 
-## ----fig.width=5, fig.height=4------------------------------------------------
+## ---- fig.width=5, fig.height=4-----------------------------------------------
 par(mai=c(0.1,0.1,0.1,0.1))
 g <- OCN_to_igraph(OCNwe, level = "AG")
 plot.igraph(g, vertex.color = rainbow(OCNwe$AG$nNodes), 
      layout = matrix(c(OCNwe$AG$X,OCNwe$AG$Y),ncol = 2, nrow = OCNwe$AG$nNodes))
 
-## ----fig.width=5, fig.height=3------------------------------------------------
+## ---- fig.width=5, fig.height=3-----------------------------------------------
 par(mai=c(0,0,0,0))
 draw_thematic_OCN(c(1:OCNwe$AG$nNodes), OCNwe, discreteLevels = TRUE, drawNodes = TRUE,
                   colPalette = rainbow,  cex = 3, riverColor = "#999999",

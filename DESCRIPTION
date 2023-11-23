@@ -1,6 +1,6 @@
 Package: OCNet
 Title: Optimal Channel Networks
-Version: 1.2.0
+Version: 1.2.1
 Authors@R: 
     c(person(given = "Luca",
            family = "Carraro",
@@ -34,7 +34,7 @@ Description: Generate and analyze Optimal Channel Networks (OCNs):
 	concept; Furrer and Sain (2010) <doi:10.18637/jss.v036.i10> for the 
 	construct used.
 Imports: fields, spam, rgl, methods, igraph, Rcpp (>= 1.0.10),
-        adespatial, spdep
+        adespatial, spdep, terra
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -44,7 +44,7 @@ VignetteBuilder: knitr
 URL: https://lucarraro.github.io/OCNet/
 LinkingTo: Rcpp
 NeedsCompilation: yes
-Packaged: 2023-10-13 06:21:49 UTC; carrarlu
+Packaged: 2023-11-23 14:54:54 UTC; lucac
 Author: Luca Carraro [aut, cre],
   Florian Altermatt [ctb],
   Emanuel A. Fronhofer [ctb],
@@ -54,4 +54,4 @@ Author: Luca Carraro [aut, cre],
   Enrico Bertuzzo [aut]
 Maintainer: Luca Carraro <luca.carraro@hotmail.it>
 Repository: CRAN
-Date/Publication: 2023-10-13 14:20:02 UTC
+Date/Publication: 2023-11-23 17:10:02 UTC

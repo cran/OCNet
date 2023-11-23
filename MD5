@@ -1,11 +1,11 @@
-d4bee9d16dc11edb6f72714c37d17490 *DESCRIPTION
-bc00064d11cbe84b696d81a4c5bcb6cf *NAMESPACE
-c4a2786da4d2a8dc8a4d2b699418440e *NEWS.md
+803b11990078646761183bce691d89eb *DESCRIPTION
+bc95648ba0a30337c2adab2a1ccc8229 *NAMESPACE
+354d6636e0006e9a74233ab3b9634d7e *NEWS.md
 27e76739f3d027a551393304b6381404 *R/OCN_to_AEM.R
 0070c786f0e43ea0defc90a3dc1dfec9 *R/OCN_to_SSN.R
 57369ac270a17327ac55727402e8e181 *R/OCN_to_igraph.R
 7af5af1013ee75e305033827b0a4f82e *R/RcppExports.R
-c703c8058c5efe6e058b51174e45c348 *R/aggregate_OCN.R
+8a3eb0326df94a686a90ed488175b51e *R/aggregate_OCN.R
 cf33cc926c177c4a27c8f9fac360c4f6 *R/continue_OCN.R
 3854076def12dcb9a8623079fb2ef488 *R/create_OCN.R
 ac25a6ec5489c71d276c05fb3a80a074 *R/create_general_contour_OCN.R
@@ -22,7 +22,7 @@ a57a257cb66f73dfd55e13b37d60ca16 *R/find_area_threshold_OCN.R
 2f7560bad51137cd13eff683460ffea8 *R/landscape_OCN.R
 4d00be01485a0b3db6c870d4f3a3ea80 *R/paths_OCN.R
 8402d06c975bb2a37d95cc3bb8bc729c *R/rivergeometry_OCN.R
-a34b261f21a997965866a0622f611a0b *build/vignette.rds
+398f6702a0c00db0c3fbbfc69fa54931 *build/vignette.rds
 628f9d4e2d5ca747ac3b0f4e5310563e *data/OCN_20.rda
 271e14aaca9041fdc7ae8933a54f41a5 *data/OCN_250_PB.rda
 5d370c0b83505a33229fc51fb5cca882 *data/OCN_250_T.rda
@@ -32,7 +32,7 @@ c27ecb6e0aab3d2656c8467bc29fc5c1 *data/OCN_4.rda
 5bfb40fd88139e3d776ab916d1215de2 *data/OCN_400_Allout.rda
 2bc8c21125d3dad995b33b11fe9f7728 *data/flowDir.rda
 0a25a0fac813e2f4b90ab89eb5d12d12 *inst/CITATION
-61c617e2fb483efc344296e115675f9b *inst/doc/OCNet.R
+94e033f1b727814399965b0805dc5215 *inst/doc/OCNet.R
 818d6ba2fd18f04768d04cf012c4fbf5 *inst/doc/OCNet.Rmd
 fc74638e0bb0f4159dceb4dfe0d4507f *inst/doc/OCNet.html
 06c2dfb9e7f27a074b33b0bdb6694647 *inst/extdata/OCN_3020.png
@@ -47,7 +47,7 @@ b690d6129b426ed75ae5c4d4da81540d *man/OCN_to_AEM.Rd
 d8614db446c231b884ddae47b064794b *man/OCN_to_SSN.Rd
 e99915e47f6c123000d8899ce1b4ed7a *man/OCN_to_igraph.Rd
 4e349bc289507dfc6e15d259ae35027a *man/OCNet-package.Rd
-64ce08580e4ea443d79a616e5666be75 *man/aggregate_OCN.Rd
+f34e98e8c8cfe96cf9dc35c98966c442 *man/aggregate_OCN.Rd
 bd2de439f9c23968c2cd360f1dc1694f *man/continue_OCN.Rd
 fff8a066d2c1a954928cad8da4aa2c2c *man/create_OCN.Rd
 330cf928e1ea42ca380bf479ed3d57fe *man/create_general_contour_OCN.Rd
@@ -58,12 +58,12 @@ d749a34daa87da1378469a2ffc1aca21 *man/draw_elev2D_OCN.Rd
 facafbda1af1292aa2c7abbb3da006db *man/draw_elev3Drgl_OCN.Rd
 53f75d617c1600797f53648ddd175020 *man/draw_simple_OCN.Rd
 ca1e64a710b112009c00e8975d357e88 *man/draw_subcatchments_OCN.Rd
-803e2195f77a1f85ba999108084ed5e5 *man/draw_thematic_OCN.Rd
+72d58fd88c04144aae64b384aeb67e59 *man/draw_thematic_OCN.Rd
 ae548d6deeec72756fc50442a6593bf7 *man/find_area_threshold_OCN.Rd
 c87c68c486765af3e9cb9943a3e8082c *man/flowDir.Rd
 783d0fe31000033576b5fb296e32df1c *man/landscape_OCN.Rd
 c6d5c2b163c07dea84d9cf5957205bc8 *man/paths_OCN.Rd
-29ded4b3dc053d03708d2eaa8a812be0 *man/plot.Rd
+35abc7db0afce898df2774ae290c1f28 *man/plot.Rd
 9404bf93c34fe04ab14432c0a5277529 *man/river-class.Rd
 3e30e51de70b38e3bde231e4cb460bb5 *man/rivergeometry_OCN.Rd
 32d1c30e928d005b59c4c8ead651e989 *src/NeighbouringNodes.cpp
